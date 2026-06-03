@@ -116,15 +116,27 @@ class SlackAIAgent {
     }
     
 
-    // async getUserInfo(userId) {
-    //     const result = await this.webClient.users.info({ user: userId });
+    // Getting the user Information
 
-    //     const user = result.user;
+    async getUserInfo(userId) {
+        const result = await this.webClient.users.info({ user: userId });
 
-    //     return {
-    //         id: 
-    //     }
+        const user = result.user;
 
-    // }
+        return {
+            id: user.id,
+            name: user.real_name || user.name,
+            username: user.name,
+            email: user.profile?.email,
+            title: user.profile?.title,
+            timezone: user.tz,
+            profile: {
+                firstName: user.profile?.first_name,
+                lastName: user.profile?.last_name,
+                statusText: user.profile?.status_text
+            }
+        }
+
+    }
 
 }
