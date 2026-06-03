@@ -139,4 +139,39 @@ class SlackAIAgent {
 
     }
 
+    async analyzeAndPostMember(memberInfo) {
+        let analysisId = null;
+
+        try {
+            log.info(`Processing member: ${memberInfo.name}`);
+
+            // Step - 1
+            const researchData = await this.doBasicResearch(memberInfo);
+            
+            // Step - 2
+            const analysis = await this.analyzeWithAI(memberInfo, researchData);
+
+            log.info(`Saving analysis to database for ${memberInfo.name}`);
+
+            // Step - 3
+            analysisId = await saveMemberAnalysis(memberInfo, analysis, researchData);
+
+            // Step - 4
+            await this.postAnalysisToChannel(memberInfo, analysis, researchData);
+
+            // Step - 5
+            if (analysisId) {
+                await markAsSentToSlack(analysisId);
+            }
+
+        }
+        catch (error) {
+            log.error(`Error processing ${memberInfo.name}: `, error.message);
+            if (analysisId) {
+                log.info(`Analysis ${analysisId} saved to database but not sent to slack due to error.`)
+            }
+            throw error;
+        }
+    }
+
 }
