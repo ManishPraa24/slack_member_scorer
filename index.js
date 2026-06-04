@@ -174,4 +174,36 @@ class SlackAIAgent {
         }
     }
 
+    // Gather's publicly available information of the member's
+    // company website, github, etc.
+
+    async doBasicResearch() {
+
+        const results = [];
+
+        try {
+            if (memberInfo.email && !this.isPersonalEmail(memberInfo.email)) {
+                
+                const domain = memberInfo.email.split('@')[1];
+                const companyInfo = await this.getCompanyInfo(domain);
+
+                if (companyInfo) {
+                    results.push(companyInfo);
+                }
+
+                if (memberInfo.name) {
+                    const githubInfo = await this.getGitHubInfo(memberInfo.name);
+
+                    if (githubInfo) results.push(githubInfo);
+                }
+
+            }
+        }
+        catch (error) {
+            log.error('Research error: ', error.message);
+        }
+
+        return results;
+    }
+
 }
