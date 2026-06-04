@@ -206,4 +206,38 @@ class SlackAIAgent {
         return results;
     }
 
+
+    // Function to get the Company Information
+    // based on the domain of the email ID of the member
+
+    async getCompanyInfo(domain) {
+        try {
+
+            // Response should come within 5 secs
+            // Else timeout deletes the package
+            const response = await axios.get(`https://www.${domain}`, {
+                timeout: 5000,
+                headers: { 'User-Agent': 'Mozilla/5.0' }
+            });
+
+            const titleMatch = response.data.match(<title>(.*?)</title>);
+
+            const title = titleMatch ? titleMatch[1] : `Company: ${domain}`;
+
+            return {
+                url: `https://www.${domain}`,
+                title: title,
+                content: `Company website for ${domain}`,
+                type: 'company'
+            }
+
+        }
+        catch (err) {
+            log.error(`Could not fetch ${domain}:`, error.message);
+
+            return null;
+        }
+    }
+
+
 }
