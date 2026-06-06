@@ -110,5 +110,35 @@ export async function saveMemberAnalysis(memberInfo, analysis, researchData) {
 }
 
 
+export async function markAsSentToSlack(analysisId) {
+
+    const client = await pool.connect();
+    
+    try {
+
+        await client.query(
+            `
+                UPDATE member_analyses
+                SET sent_to_slack = TRUE,
+                    sent_to_slack_at = CURRENT_TIMESTAMP,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $1
+            `,
+            [analysisId]
+        );
+    }
+    catch (error) {
+        console.error('[ERROR] Failed to mark as sent to Slack:', error.message);
+        throw error;
+    }
+    finally {
+        client.release();
+    }
+
+}
+
+
+
+
 
 
