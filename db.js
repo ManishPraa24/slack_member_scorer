@@ -11,5 +11,70 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
 });
 
+pool.on('connect', () => {
+    console.log('[INFO] Database connected');
+});
+
+pool.on('error', () => {
+    console.log('[ERROR] Unexpected database error: ', err.message);
+});
+
+export async function initDatabase() {
+    const client = await pool.connect();
+
+    try {
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS member_analyses (
+            
+                id SERIAL PRIMARY KEY,
+                member_id VARCHAR(255),
+                member_name VARCHAR(255) NOT NULL,
+                member_email VARCHAR(255),
+                member_title VARCHAR(255),
+                member_timezone VARCHAR(100),
+
+                fit_score INTEGER NOT NULL,
+                insights JSONB,
+                recommendations JSONB,
+                research_data JSONB,
+                analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                sent_to_slack BOOLEAN DEFAULT FALSE,
+                sent_to_slack TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            `)
+        
+        await client.query(`
+                CREATE INDEX IF NOT EXISTS idx_member_id ON member_analyses(member_id);
+            `);
+        
+        await client.query(`
+                CREATE INDEX IF NOT EXISTS idx_analyzed_at ON member_analyses(analyzed_at); 
+            `);
+        
+        console.log('[INFO] Database schema initialized');
+    }
+    catch (error) {
+        console.log('[ERROR] Failed to initialize database:', error.message);
+        throw error;
+    }
+    finally {
+        client.release();
+    }
+}
+
+export async function saveMemberAnalysis(memberInfo, analysis, researchData) {
+
+    try {
+        
+    }
+    catch (error) {
+        
+    }
+
+}
+
+
 
 
