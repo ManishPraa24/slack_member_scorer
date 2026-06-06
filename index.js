@@ -13,6 +13,8 @@ import dotenv from "dotenv";
 // Axios: Useful for making external API request
 import axios from "axios";
 
+import { initDatabase, saveMemberAnalysis, markAsSentToSlack, closeDatabase } from "./db";
+
 dotenv.config();
 
 const log = {
