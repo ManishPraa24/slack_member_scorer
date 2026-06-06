@@ -423,5 +423,18 @@ class SlackAIAgent {
         log.info(`Analysis posted to channel for ${member.name}`)
     }
 
+    // Checks whether the email is personal or not
+
+    isPersonalEmail(email) {
+        
+        const personalDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'];
+
+        const domain = email.split("@")[1]?.toLowerCase();
+
+        return personalDomains.includes(domain);
+
+    }
+
+    
 
 }
