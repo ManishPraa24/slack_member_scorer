@@ -137,7 +137,12 @@ export async function markAsSentToSlack(analysisId) {
 
 }
 
+export async function closeDatabase() {
+    await pool.end();
+    console.log('[INFO] Database connection pool closed');
+}
 
+export default pool;
 
 
 
