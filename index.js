@@ -13,7 +13,7 @@ import dotenv from "dotenv";
 // Axios: Useful for making external API request
 import axios from "axios";
 
-import { initDatabase, saveMemberAnalysis, markAsSentToSlack, closeDatabase } from "./db";
+import { initDatabase, saveMemberAnalysis, markAsSentToSlack, closeDatabase } from "./db.js";
 
 dotenv.config();
 
@@ -222,7 +222,7 @@ class SlackAIAgent {
                 headers: { 'User-Agent': 'Mozilla/5.0' }
             });
 
-            const titleMatch = response.data.match(<title>(.*?)</title>);
+            const titleMatch = response.data.match(/<title>(.*?)<\/title>/i);
 
             const title = titleMatch ? titleMatch[1] : `Company: ${domain}`;
 
